@@ -9,8 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    
-    @IBOutlet weak var collectionView: UICollectionView!
+    var collectionView: UICollectionView!
+//    @IBOutlet weak var collectionView: UICollectionView!
     
     var deviceArray: [Devices] = {
         let airpods = Devices(deviceImageName: "airpods")
@@ -26,31 +26,32 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         setupCollectionView()
-        
     }
     
     func setupCollectionView() {
+        let layout = UICollectionViewFlowLayout()
         
-//        var collectionView = UICollectionView(frame: CGRect(x: 0, y: 40, width: UIScreen.main.bounds.width, height: 100), collectionViewLayout: layout)
+        layout.sectionInset = UIEdgeInsets(top: 30, left: 10, bottom: 10, right: 10)
+        layout.itemSize = CGSize(width: 120, height: 120)
+        layout.scrollDirection = .horizontal
         
-        collectionView.register(UINib(nibName: "DeviceCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "DeviceCollectionViewCell")
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+
+        collectionView.frame = CGRect(x: 0, y: 0, width: view.safeAreaLayoutGuide.layoutFrame.width, height: 200)
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.register(DeviceCollectionViewCell.self, forCellWithReuseIdentifier: "DeviceCollectionViewCell")
+        collectionView.backgroundColor = .systemGray4
         collectionView.reloadData()
         
-        let layout = UICollectionViewFlowLayout()
-        collectionView.collectionViewLayout = layout
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 150, height: 150)
-        
-//        view.addSubview(collectionView)
+        view.addSubview(collectionView)
     }
-
 
 }
 
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return deviceArray.count
     }
@@ -58,8 +59,9 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DeviceCollectionViewCell", for: indexPath) as! DeviceCollectionViewCell
-        
         let devices = deviceArray[indexPath.row]
+        cell.backgroundColor = .systemGray3
+        cell.layer.cornerRadius = 20
         cell.configure(device: devices)
         
         return cell
